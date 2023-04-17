@@ -481,37 +481,51 @@ Designed for 99.5% availability.
 
 This storage class cannot withstand AZ failure.
 
-#### S3 Glacier
+#### S3 Glacier Instant
+IA has instant retreival, like once a month 
+Glacier is also **instant retreival**, but access it evry quater.
 
-No immediate access to objects. Make a request to access objects then after
-a duration, you get the access. Retrieval time anywhere from 1 min - 12 hrs
+**90 days minimum storage** duration charge.
 
-Secure, durable, and low cost storage for archival data.
-Cost is 17% of S3 standard
-11 9's durability and 4 9's availability, 3+ AZ replication.
+access frequency less than IA
 
-40KB minimum object capacity charge
+#### S3 Glacier - Flexible
+ - same 3 Az
+ - same durablility 11 9's
+ - storage cost - 1/6 s3 std
+ - objects are cold objects - not immediately available, can't be made public
+ - Need to perfom reteival process - pay for it
+ - when retrived, objects stored in s3 standard IA storage class temporarily and removed.
+ - retreival 3 types
+ ##### Expedited
+ - data available in 1-3 min - most expensive
+ ##### Standard
+ - data in 3-5 hours
+ ##### Bulk
+ - data in 5-12 hours
 
-90 days minimum storage duration charge.
-
-Retrieval in minutes or hours.
-
-##### Expedited
-
-Retrieval between 1 - 5 minutes, most expensive
-
-##### Standard
-
-Retrievals take 3 - 5 hours to restore.
-This is good for backup data or original media if there was a mistake.
-
-##### Bulk retrievals
-
-Retrievals take 5 - 12 hours.
-Lowest cost and is used for large amounts of data.
-
+ **first byte latency from mins to hours**
+ **40kb min billable size**
+ **90 day min billable duration**
+ - ideal for archived data where frequent/real time access isn't needed. (example yearly access)
+ 
+ 
 #### S3 Glacier Deep Archive
 
+Data in frozen state
+
+**40kb minimum billable size**
+**180day min billable duration**
+
+ - when retrived, objects stored in s3 standard IA storage class temporarily and removed.
+ 
+ ##### Standard -12 hours
+ ##### Bulk - 48 hours
+ 
+ latency in hours & days
+ 
+ ideal for archive, rarely used, secondary long term archival backuo, legal &regulatory requirement data.
+ 
 Designed for long term backups and as a **tape-drive** replacement.
 
 Currently 4.3% of S3-Standard.
@@ -524,15 +538,30 @@ Cannot use to make data public or download normally.
 
 #### S3 Intelligent-Tiering
 
-Combination of standard and standard IA.
+monitor usage of access
 
-Uses automation to remove overhead of moving objects.
+if obj not access within 30 days, moved to IA
+
+users can add config based on bucket/prefix/obj tag,
+
+90 days min - glaciar instant
+
+(optional tiers)
+
+90-270 days min - Glacier Flexible (Archive access)
+
+180-730 days min - Deep archive (Deep Archive access)
+
+
+Uses automation to remove overhead of moving objects
+
+automation & montoring cost per 1000 objects
 
 Charges $0.0025 per 1,000 objects.
 
 If an object is not accessed for 30 days, it will move into infrequent access.
 
-This is good for objects that are unknown their access pattern.
+**This is good for objects that are unknown their access pattern.**
 
 ### Object Lifecycle Management
 
